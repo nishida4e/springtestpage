@@ -22,15 +22,19 @@
 		ajaxSearch("", "1");
 	});
 
+	function pageOnclick(paginationVal) {
 		var searchKey = document.forms.searchForm.keyword.value;
+		ajaxSearch(searchKey, paginationVal);
 	}
 
+	function ajaxSearch(searchKey, paginationVal) {
 		$.ajax({
 			type : "POST",
 			url : "/searchByNameAjax",
 			dataType : "text",
 			data : {
 				searchKey : searchKey,
+				paginationVal : paginationVal
 			},
 			cache : false,
 			success : function(data, status, xhr) {
@@ -71,6 +75,8 @@
 			cache : false,
 			success : function(data, status, xhr) {
 				var searchKey = document.forms.searchForm.keyword.value;
+				var paginationVal = $("#pagination .active").attr('id');
+				ajaxSearch(searchKey, paginationVal);
 			},
 			error : function(XMLHttpRequest, status, errorThrown) {
 				alert("fail:" + XMLHttpRequest);
