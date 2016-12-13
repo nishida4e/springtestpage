@@ -20,14 +20,14 @@ public class TestControllerAjax {
 	@RequestMapping(value = "/onclickDeleteAjax")
 	String onclickDeleteAjax(@RequestParam String id) {
 		foodService.delete(Integer.parseInt(id));
-		return searchByNameAjax("");
+		return null;
 	}
 
 	@RequestMapping(value = "/searchByNameAjax")
-	String searchByNameAjax(@RequestParam String searchKey) {
-
+	String searchByNameAjax(@RequestParam String searchKey, @RequestParam String paginationVal) {
+		
 		// 現在のページ
-		int currentPage = 1;
+		int currentPage = Integer.parseInt(paginationVal);
 		// 1ページあたりの表示件数
 		int elementsOnPage = 2;
 		Pageable pageable = new PageRequest((currentPage - 1), elementsOnPage);
@@ -52,9 +52,9 @@ public class TestControllerAjax {
 
 		for (int i = 0; i < allPage; i++) {
 			if(nowPage==i){
-				ret += "<li class=\"active\" onclick=\"pageOnclick(" + (i + 1) + ")\"><a href=\"#\">" + (i + 1) + "</a></li>";
+				ret += "<li class=\"active\" id="+ (i + 1) +" onclick=\"pageOnclick(" + (i + 1) + ")\"><a href=\"#\">" + (i + 1) + "</a></li>";
 			} else{
-				ret += "<li onclick=\"pageOnclick(" + (i + 1) + ")\"><a href=\"#\">" + (i + 1) + "</a></li>";
+				ret += "<li id="+ (i + 1) +" onclick=\"pageOnclick(" + (i + 1) + ")\"><a href=\"#\">" + (i + 1) + "</a></li>";
 			}
 		}
 
@@ -66,6 +66,9 @@ public class TestControllerAjax {
 		for (int i = 0; i < foodList.size(); i++) {
 			ret += "<tr>";
 			FoodPrice fp = foodList.get(i);
+			ret += "<td>";
+			ret += fp.getId();
+			ret += "</td>";
 			ret += "<td>";
 			ret += fp.getName();
 			ret += "</td>";

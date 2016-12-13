@@ -18,100 +18,75 @@
 	th:src="@{/webjars/bootstrap/3.3.7/js/bootstrap.min.js}"></script>
 
 <script type="text/javascript">
-
-$(document).ready(function(){
-	$.ajax({
-		type : "POST",
-		url : "/searchByNameAjax",
-		dataType : "text",
-		data : {searchKey : ""},
-		cache : false,
-		success : function(data, status, xhr) {
-			//alert("success");
-			//alert(data);
-			splitdata = data.split(";");
-			var firstTr = $("#menutable tr:first-child");
-			var trs = $("#menutable tr:not(:first-child)");
-			trs.remove();
-			firstTr.after(splitdata[1]);
-			
-			pagination = document.getElementById('pagination');
-			pagination.innerHTML =splitdata[0];
-			
-		},
-		error : function(XMLHttpRequest, status, errorThrown) {
-			alert("fail:" + XMLHttpRequest);
-			alert("status:" + status);
-		}
+	$(document).ready(function() {
+		ajaxSearch("", "1");
 	});
-});
-	
-$(function() {
-	$("#ajaxSearch").click(function() {
+
 		var searchKey = document.forms.searchForm.keyword.value;
+	}
+
 		$.ajax({
 			type : "POST",
 			url : "/searchByNameAjax",
 			dataType : "text",
-			data : {searchKey : searchKey},
+			data : {
+				searchKey : searchKey,
+			},
 			cache : false,
 			success : function(data, status, xhr) {
 				//alert("success");
 				//alert(data);
+				splitdata = data.split(";");
 				var firstTr = $("#menutable tr:first-child");
 				var trs = $("#menutable tr:not(:first-child)");
 				trs.remove();
-				firstTr.after(data);
+				firstTr.after(splitdata[1]);
+
+				pagination = document.getElementById('pagination');
+				pagination.innerHTML = splitdata[0];
+
 			},
 			error : function(XMLHttpRequest, status, errorThrown) {
 				alert("fail:" + XMLHttpRequest);
 				alert("status:" + status);
 			}
 		});
-	});
-});
+	}
 
-function onclickDelete(id){
-	
-	$.ajax({
-		type : "POST",
-		url : "/onclickDeleteAjax",
-		dataType : "text",
-		data : {id : id},
-		cache : false,
-		success : function(data, status, xhr) {
-			var firstTr = $("#menutable tr:first-child");
-			var trs = $("#menutable tr:not(:first-child)");
-			trs.remove();
-			firstTr.after(data);
-		},
-		error : function(XMLHttpRequest, status, errorThrown) {
-			alert("fail:" + XMLHttpRequest);
-			alert("status:" + status);
-		}
+	$(function() {
+		$("#ajaxSearch").click(function() {
+			var searchKey = document.forms.searchForm.keyword.value;
+			ajaxSearch(searchKey, "1");
+		});
 	});
 
-}
+	function onclickDelete(id) {
+		$.ajax({
+			type : "POST",
+			url : "/onclickDeleteAjax",
+			dataType : "text",
+			data : {
+				id : id
+			},
+			cache : false,
+			success : function(data, status, xhr) {
+				var searchKey = document.forms.searchForm.keyword.value;
+			},
+			error : function(XMLHttpRequest, status, errorThrown) {
+				alert("fail:" + XMLHttpRequest);
+				alert("status:" + status);
+			}
+		});
+	}
 
-function onclickEdit(id){
-
-	document.forms.hidForm.id.value = id;
-	
-	var f = document.forms.hidForm;
-	f.method = "POST";
-	f.action = "/edit";
-	f.submit();
-	
-	return true;
-
-}
-
-function pageOnclick(num){
-	alert("page_test:"+num);
-	
-}
-
-
+	function onclickEdit(id) {
+		document.forms.hidForm.id.value = id;
+		var f = document.forms.hidForm;
+		f.method = "POST";
+		f.action = "/edit";
+		f.submit();
+		return true;
+	}
 </script>
 
 </head>
@@ -120,7 +95,6 @@ function pageOnclick(num){
 	<div class="container">
 
 		<h3>一覧画面</h3>
-
 
 
 		<form th:action="@{/reg}" method="post">
@@ -142,11 +116,13 @@ function pageOnclick(num){
 
 		<table class="table table-striped table-condensed" id="menutable">
 			<tr>
+				<th>ID</th>
 				<th>商品名</th>
 				<th>価格</th>
 				<th colspan="2"></th>
 			</tr>
 			<tr th:each="food : ${foodModel}">
+				<td th:text="${food.id}">1</td>
 				<td th:text="${food.name}">牛丼</td>
 				<td th:text="${food.price}">380</td>
 				<td>
